@@ -5,7 +5,7 @@ import logo from './logo.svg';
 import './App.css';
 
 
-mapboxgl.accessToken = "pk.eyJ1Ijoic3RvbmVzaGEiLCJhIjoiY2tnYnlpNGtuMDE3ODJ1bnlnZWZkYmlycyJ9.l1HxrvvA6pOOflL5igumHw";
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY;
 
 class App extends React.Component {
   constructor(props) {
