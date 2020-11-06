@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, {NavigationControl} from 'react-map-gl';
 
 class Map extends Component {
 
@@ -20,16 +20,18 @@ class Map extends Component {
 
   render() {
     return(
-      <ReactMapGL
+      <ReactMapGL {...this.state.viewport}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
         //full list of styles here if you think one fits more
         //https://docs.mapbox.com/api/maps/#styles
         mapStyle="mapbox://styles/mapbox/streets-v11"
         //if you want to read up on what these ... do
         //https://stackoverflow.com/questions/31048953/what-do-these-three-dots-in-react-do
-        {...this.state.viewport}
-        onViewportChange={(viewport) => this.setState({viewport})}
-      />
+        onViewportChange={(viewport) => this.setState({viewport})}>
+        <div style={{position: 'absolute', left: '1%', top: '1%'}}>
+          <NavigationControl />
+        </div>
+      </ReactMapGL>
    );
   }
 }
