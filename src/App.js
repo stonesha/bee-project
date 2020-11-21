@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import './App.css';
 import ReactMapGL, {NavigationControl} from 'react-map-gl';
+import {
+  Editor,
+  EditingMode,
+  DrawLineStringMode,
+  DrawPolygonMode,
+} from "react-map-gl-draw";
+
+const MODES = [
+  { id: "drawPolyline", text: "Draw Polyline", handler: DrawLineStringMode },
+  { id: "drawPolygon", text: "Draw Polygon", handler: DrawPolygonMode },
+  { id: "editing", text: "Edit Feature", handler: EditingMode },
+];
 
 class Map extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       viewport: {
         width: window.innerWidth,
@@ -14,9 +26,37 @@ class Map extends Component {
         latitude: 39.52766,
         longitude: -119.81353,
         zoom: 10
-      }
+      },
+      modeId: null,
+      modeHandler: null,
     };
   }
+
+  _switchMode = (evt) => {
+    const modeId =
+      evt.target.value === this.state.modeId ? null : evt.target.value;
+    const mode = MODES.find((m) => m.id === modeId);
+    const modeHandler = mode ? new mode.handler() : null;
+    this.setState({ modeId, modeHandler });
+  };
+
+  _renderToolbar = () => {
+    return (
+      <div
+        style={{ position: "absolute", top: 0, right: 0, maxWidth: "320px" }}
+      >
+        <select onChange={this._switchMode}>
+          <option value="">--Please choose a draw mode--</option>
+          {MODES.map((mode) => (
+            <option key={mode.id} value={mode.id}>
+              {mode.text}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
+
 
   render() {
     return(
@@ -31,29 +71,29 @@ class Map extends Component {
         <div style={{position: 'absolute', left: '1%', top: '1%'}}>
           <NavigationControl />
         </div>
+        <Editor
+          // to make the lines/vertices easier to interact with
+          clickRadius={12}
+          mode={this.state.modeHandler}
+          onSelect={(_) => {}}
+        />
+        {this._renderToolbar()}
       </ReactMapGL>
    );
   }
 }
 
-class App extends React.Component {
+class App extends Component {
 
+  /*
   constructor(){
     super();
-
-    this.state = {
-      //for setting the div element to fullscreen
-      full: {
-        height: '100%',
-        width: '100%'
-      }
-    }
-  }
+  }*/
   
   render() {
     return (
       <div>
-        <div style={this.state.full}><Map /></div>
+        <div class="Map"><Map /></div>
       </div>
     )
   }
