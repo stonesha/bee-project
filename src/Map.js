@@ -55,17 +55,16 @@ class Map extends Component {
   _renderToolbar = () => {
     return (
       <div
+        style={{ position: "absolute", top: 0, right: 0, maxWidth: "320px" }}
       >
-      <ButtonGroup
-        orientation="vertical"
-        color="default"
-        variant="contained"
-        aria-label="draw controls"
-      >
-        <Button>One</Button>
-        <Button>Two</Button>
-        <Button>Three</Button>
-      </ButtonGroup>
+        <select onChange={this._switchMode}>
+          <option value="">--Please choose a draw mode--</option>
+          {MODES.map((mode) => (
+            <option key={mode.id} value={mode.id}>
+              {mode.text}
+            </option>
+          ))}
+        </select>
       </div>
     );
   };
