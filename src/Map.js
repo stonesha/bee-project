@@ -1,30 +1,17 @@
 import React, { Component } from 'react';
 import './Map.css';
-import ReactMapGL, {NavigationControl} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
   DrawLineStringMode,
   DrawPolygonMode,
 } from "react-map-gl-draw";
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { withStyles } from '@material-ui/core/styles';
 
-const useStyles = withStyles((theme) => ({
-  root: {
-    display: 'flex',
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
+import {Button, ButtonGroup } from '@material-ui/core';
 
-const MODES = [
-  { id: "drawPolyline", text: "Draw Polyline", handler: DrawLineStringMode },
-  { id: "drawPolygon", text: "Draw Polygon", handler: DrawPolygonMode },
-  { id: "editing", text: "Edit Feature", handler: EditingMode },
-];
+import {FaRoute, FaDrawPolygon, FaEdit} from "react-icons/fa";
+
 
 class Map extends Component {
 
@@ -39,32 +26,61 @@ class Map extends Component {
         longitude: -119.81353,
         zoom: 10
       },
-      modeId: null,
       modeHandler: null,
     };
   }
 
   _switchMode = (evt) => {
-    const modeId =
-      evt.target.value === this.state.modeId ? null : evt.target.value;
-    const mode = MODES.find((m) => m.id === modeId);
-    const modeHandler = mode ? new mode.handler() : null;
-    this.setState({ modeId, modeHandler });
+    switch(evt) {
+      case 'Polyline':
+        var modeHandler = new DrawLineStringMode();
+        this.setState({modeHandler});
+        break;
+      case 'Polygon':
+        var modeHandler = new DrawPolygonMode();
+        this.setState({modeHandler});
+        break;
+      case 'Editing':
+        var modeHandler = new EditingMode();
+        this.setState({modeHandler});
+        break;
+      default:
+        var modeHandler = null;
+        this.setState({modeHandler});
+        break;
+    }
   };
 
   _renderToolbar = () => {
     return (
-      <div
-        style={{ position: "absolute", top: 0, right: 0, maxWidth: "320px" }}
+      <div>
+      <ButtonGroup
+        style={{
+          backgroundColor: "black"}}
+        orientation='vertical'
       >
-        <select onChange={this._switchMode}>
-          <option value="">--Please choose a draw mode--</option>
-          {MODES.map((mode) => (
-            <option key={mode.id} value={mode.id}>
-              {mode.text}
-            </option>
-          ))}
-        </select>
+        <Button 
+        style = {{
+          color: "white"
+        }}
+          onClick={() => {this._switchMode('Polyline');}}
+        ><FaRoute />
+        </Button>
+
+        <Button 
+        style = {{
+          color: "white"
+        }} onClick={() => {this._switchMode('Polygon');}}
+        ><FaDrawPolygon />
+        </Button>
+
+        <Button 
+        style = {{
+          color: "white"
+        }} onClick={() => {this._switchMode('Editing');}}
+        ><FaEdit /></Button>
+
+      </ButtonGroup>
       </div>
     );
   };
@@ -77,12 +93,16 @@ class Map extends Component {
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
           //https://docs.mapbox.com/api/maps/#styles
-          mapStyle="mapbox://styles/mapbox/streets-v11"
-          //if you want to read up on what these ... do
-          //https://stackoverflow.com/questions/31048953/what-do-these-three-dots-in-react-do
-          onViewportChange={(viewport) => this.setState({viewport})}>
+          mapStyle="mapbox://styles/mapbox/dark-v10"
+          onViewportChange={(viewport) => this.setState({viewport})}
+          transitionDuration={100} 
+          transitionInterpolator={new FlyToInterpolator()}>
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
-            <NavigationControl />
+            <NavigationControl 
+              style={{
+                color: "black"}}
+              captureDoubleClick="false"
+            />
           </div>
           <div style={{position: 'absolute', left: '1%', top: '15%'}}>
             {this._renderToolbar()}
