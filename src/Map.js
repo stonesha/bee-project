@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './Map.css';
 import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
 import {
@@ -9,6 +10,7 @@ import {
 } from "react-map-gl-draw";
 
 import {Button, ButtonGroup } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import {FaRoute, FaDrawPolygon, FaEdit} from "react-icons/fa";
 
@@ -54,32 +56,36 @@ class Map extends Component {
   _renderToolbar = () => {
     return (
       <div>
-      <ButtonGroup
+      <ButtonGroup size = 'small'
         style={{
-          backgroundColor: "black"}}
+          backgroundColor: "white"}}
         orientation='vertical'
       >
+        <Tooltip title = "Draw Line" placement = "right">
+          <Button
+            style = {{
+            color: "black"
+            }}
+              onClick={() => {this._switchMode('Polyline');}}
+             ><FaRoute />  
+          </Button>
+        </Tooltip>
+      <Tooltip title = "Draw Area" placement = "right">
         <Button 
         style = {{
-          color: "white"
-        }}
-          onClick={() => {this._switchMode('Polyline');}}
-        ><FaRoute />
-        </Button>
-
-        <Button 
-        style = {{
-          color: "white"
+          color: "black"
         }} onClick={() => {this._switchMode('Polygon');}}
         ><FaDrawPolygon />
         </Button>
+      </Tooltip>
 
+      <Tooltip title = "Select and Drag" placement = "right">
         <Button 
         style = {{
-          color: "white"
+          color: "black"
         }} onClick={() => {this._switchMode('Editing');}}
         ><FaEdit /></Button>
-
+      </Tooltip>
       </ButtonGroup>
       </div>
     );
