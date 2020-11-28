@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator, Marker} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -12,7 +11,7 @@ import {
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import {FaRoute, FaDrawPolygon, FaEdit} from "react-icons/fa";
+import {FaRoute, FaDrawPolygon, FaEdit, FaMapMarkerAlt} from "react-icons/fa";
 
 
 class Map extends Component {
@@ -32,6 +31,7 @@ class Map extends Component {
     };
   }
 
+  
   _switchMode = (evt) => {
     switch(evt) {
       case 'Polyline':
@@ -53,38 +53,60 @@ class Map extends Component {
     }
   };
 
+//Toolbar for buttons 
   _renderToolbar = () => {
     return (
       <div>
-      <ButtonGroup size = 'small'
+      <ButtonGroup
         style={{
-          backgroundColor: "white"}}
-        orientation='vertical'
+        }}
+          orientation='vertical'
       >
-        <Tooltip title = "Draw Line" placement = "right">
-          <Button
-            style = {{
-            color: "black"
-            }}
-              onClick={() => {this._switchMode('Polyline');}}
-             ><FaRoute />  
-          </Button>
-        </Tooltip>
+      <Tooltip title = "Draw Line" placement = "right">
+        <Button
+          style = {{
+           backgroundColor: "white",
+           maxWidth: '30px',
+           maxHeight:'35px',
+           minWidth: '30px',
+           minHeight: '35px'
+          }}
+          onClick={() => {this._switchMode('Polyline');}}
+          >
+            <div>
+              <FaRoute/> 
+            </div> 
+        </Button>
+      </Tooltip>
+
       <Tooltip title = "Draw Area" placement = "right">
         <Button 
         style = {{
-          color: "black"
-        }} onClick={() => {this._switchMode('Polygon');}}
-        ><FaDrawPolygon />
+          backgroundColor: "white",
+          maxWidth: '25px',
+          maxHeight:'35px',
+          minWidth: '25px',
+          minHeight: '35px'
+        }} onClick={() => {this._switchMode('Polygon');}}>
+          <div>
+            <FaDrawPolygon/>
+          </div>
         </Button>
       </Tooltip>
 
       <Tooltip title = "Select and Drag" placement = "right">
         <Button 
         style = {{
-          color: "black"
-        }} onClick={() => {this._switchMode('Editing');}}
-        ><FaEdit /></Button>
+          backgroundColor: "white",
+          maxWidth: '25px',
+          maxHeight:'35px',
+          minWidth: '25px',
+          minHeight: '35px'
+        }} onClick={() => {this._switchMode('Editing');}}>
+          <div>
+            <FaEdit/>
+          </div>
+        </Button>
       </Tooltip>
       </ButtonGroup>
       </div>
@@ -94,7 +116,7 @@ class Map extends Component {
 
   render() {
     return(
-        <div class="Map">
+        <div>
         <ReactMapGL {...this.state.viewport}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
@@ -102,7 +124,8 @@ class Map extends Component {
           mapStyle="mapbox://styles/mapbox/dark-v10"
           onViewportChange={(viewport) => this.setState({viewport})}
           transitionDuration={100} 
-          transitionInterpolator={new FlyToInterpolator()}>
+          transitionInterpolator={new FlyToInterpolator()}
+          doubleClickZoom={false}>
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl 
               style={{
@@ -110,7 +133,7 @@ class Map extends Component {
               captureDoubleClick="false"
             />
           </div>
-          <div style={{position: 'absolute', left: '1%', top: '15%'}}>
+          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
             {this._renderToolbar()}
           </div>
           <Editor
