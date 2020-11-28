@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './Map.css';
 import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
 import {
@@ -94,7 +93,7 @@ class Map extends Component {
 
   render() {
     return(
-        <div class="Map">
+        <div>
         <ReactMapGL {...this.state.viewport}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
@@ -102,7 +101,8 @@ class Map extends Component {
           mapStyle="mapbox://styles/mapbox/dark-v10"
           onViewportChange={(viewport) => this.setState({viewport})}
           transitionDuration={100} 
-          transitionInterpolator={new FlyToInterpolator()}>
+          transitionInterpolator={new FlyToInterpolator()}
+          doubleClickZoom={false}>
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl 
               style={{
