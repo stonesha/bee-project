@@ -5,14 +5,13 @@ import {
   Editor,
   EditingMode,
   DrawLineStringMode,
-  DrawPolygonMode,
+  DrawPolygonMode
 } from "react-map-gl-draw";
 
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import {FaRoute, FaDrawPolygon, FaEdit, FaMapMarkerAlt} from "react-icons/fa";
-
 
 class Map extends Component {
 
@@ -28,11 +27,14 @@ class Map extends Component {
         zoom: 10
       },
       modeHandler: null,
+      features: [{
+      }]
     };
   }
 
   
   _switchMode = (evt) => {
+
     switch(evt) {
       case 'Polyline':
         var modeHandler = new DrawLineStringMode();
@@ -141,6 +143,9 @@ class Map extends Component {
             clickRadius={12}
             mode={this.state.modeHandler}
             onSelect={(_) => {}}
+            onUpdate={(data) => {
+              this.setState({features: data})
+            }}
           />
         </ReactMapGL>
         </div>
