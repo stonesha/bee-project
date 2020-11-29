@@ -5,13 +5,14 @@ import {
   Editor,
   EditingMode,
   DrawLineStringMode,
-  DrawPolygonMode
+  DrawPolygonMode,
+  DrawPointMode,
 } from "react-map-gl-draw";
 
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import {FaRoute, FaDrawPolygon, FaEdit, FaMapMarkerAlt} from "react-icons/fa";
+import {FaRoute, FaDrawPolygon, FaEdit, FaMapMarkerAlt,} from "react-icons/fa";
 
 class Map extends Component {
 
@@ -48,6 +49,10 @@ class Map extends Component {
         var modeHandler = new EditingMode();
         this.setState({modeHandler});
         break;
+      case 'Marking':
+        var modeHandler = new DrawPointMode();
+        this.setState({modeHandler});
+        break;
       default:
         var modeHandler = null;
         this.setState({modeHandler});
@@ -68,10 +73,10 @@ class Map extends Component {
         <Button
           style = {{
            backgroundColor: "white",
-           maxWidth: '30px',
-           maxHeight:'35px',
-           minWidth: '30px',
-           minHeight: '35px'
+           maxWidth: '20px',
+           maxHeight:'30px',
+           minWidth: '20px',
+           minHeight: '30px'
           }}
           onClick={() => {this._switchMode('Polyline');}}
           >
@@ -86,9 +91,9 @@ class Map extends Component {
         style = {{
           backgroundColor: "white",
           maxWidth: '25px',
-          maxHeight:'35px',
+          maxHeight:'30px',
           minWidth: '25px',
-          minHeight: '35px'
+          minHeight: '30px'
         }} onClick={() => {this._switchMode('Polygon');}}>
           <div>
             <FaDrawPolygon/>
@@ -101,12 +106,27 @@ class Map extends Component {
         style = {{
           backgroundColor: "white",
           maxWidth: '25px',
-          maxHeight:'35px',
+          maxHeight:'30px',
           minWidth: '25px',
-          minHeight: '35px'
+          minHeight: '30px'
         }} onClick={() => {this._switchMode('Editing');}}>
           <div>
             <FaEdit/>
+          </div>
+        </Button>
+      </Tooltip>
+
+      <Tooltip title = "Mark Area" placement = "right">
+        <Button 
+        style = {{
+          backgroundColor: "white",
+          maxWidth: '25px',
+          maxHeight:'30px',
+          minWidth: '25px',
+          minHeight: '30px'
+        }} onClick={() => {this._switchMode('Marking');}}>
+          <div>
+            <FaMapMarkerAlt/>
           </div>
         </Button>
       </Tooltip>
