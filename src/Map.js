@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator, Marker} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -12,7 +12,7 @@ import {
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import {FaRoute, FaDrawPolygon, FaEdit, FaMapMarkerAlt,} from "react-icons/fa";
+import {FaRoute, FaDrawPolygon, FaEdit, FaMapMarkerAlt, FaMousePointer} from "react-icons/fa";
 
 class Map extends Component {
 
@@ -69,6 +69,22 @@ class Map extends Component {
         }}
           orientation='vertical'
       >
+      <Tooltip title = "Default Cursor" placement = "right">
+        <Button
+          style = {{
+           backgroundColor: "white",
+           maxWidth: '20px',
+           maxHeight:'30px',
+           minWidth: '20px',
+           minHeight: '30px'
+          }}
+          onClick={() => {this._switchMode(null);}}
+          >
+            <div>
+              <FaMousePointer/> 
+            </div> 
+        </Button>
+      </Tooltip>
       <Tooltip title = "Draw Line" placement = "right">
         <Button
           style = {{
