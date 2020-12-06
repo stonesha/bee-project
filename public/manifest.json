@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "BEE App",
+  "name": "Bettering Emergency Evacuations",
   "icons": [
     {
       "src": "favicon.ico",
