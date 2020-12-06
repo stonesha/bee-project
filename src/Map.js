@@ -117,7 +117,7 @@ class Map extends Component {
         </Button>
       </Tooltip>
 
-      <Tooltip title = "Select and Drag" placement = "right">
+      <Tooltip title = "Edit" placement = "right">
         <Button 
         style = {{
           backgroundColor: "white",
@@ -155,6 +155,7 @@ class Map extends Component {
   render() {
     return(
         <div>
+
         <ReactMapGL {...this.state.viewport}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
