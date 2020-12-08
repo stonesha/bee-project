@@ -21,7 +21,7 @@ class App extends Component {
     }
     return (
       <div>
-                  <div id="app" class="loader"></div> 
+        <div id="app" class="loader"></div> 
         <Map />
       </div>
     )
@@ -29,7 +29,7 @@ class App extends Component {
 }
 
 function demoAsyncCall() {
-  return new Promise((resolve) => setTimeout(() => resolve(), 2500));
+  return new Promise((resolve) => setTimeout(() => resolve(), 200));
 }
 
 export default App;
