@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -8,11 +8,17 @@ import {
   DrawPolygonMode,
   DrawPointMode,
 } from "react-map-gl-draw";
+import Modal from './Modal';
 
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import {FaRoute, FaDrawPolygon, FaEdit, FaMapMarkerAlt, FaMousePointer} from "react-icons/fa";
+import {FaRoute, 
+  FaDrawPolygon, 
+  FaEdit, 
+  FaMapMarkerAlt, 
+  FaMousePointer,
+  FaUserFriends} from "react-icons/fa";
 
 class Map extends Component {
 
@@ -29,7 +35,8 @@ class Map extends Component {
       },
       modeHandler: null,
       features: [{
-      }]
+      }],
+      isModalOpen: false,
     };
   }
 
@@ -38,24 +45,19 @@ class Map extends Component {
 
     switch(evt) {
       case 'Polyline':
-        var modeHandler = new DrawLineStringMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new DrawLineStringMode()});
         break;
       case 'Polygon':
-        var modeHandler = new DrawPolygonMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new DrawPolygonMode()});
         break;
       case 'Editing':
-        var modeHandler = new EditingMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new EditingMode()});
         break;
       case 'Marking':
-        var modeHandler = new DrawPointMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new DrawPointMode()});
         break;
       default:
-        var modeHandler = null;
-        this.setState({modeHandler});
+        this.setState({modeHandler: null});
         break;
     }
   };
@@ -117,7 +119,7 @@ class Map extends Component {
         </Button>
       </Tooltip>
 
-      <Tooltip title = "Select and Drag" placement = "right">
+      <Tooltip title = "Edit" placement = "right">
         <Button 
         style = {{
           backgroundColor: "white",
@@ -143,6 +145,21 @@ class Map extends Component {
         }} onClick={() => {this._switchMode('Marking');}}>
           <div>
             <FaMapMarkerAlt/>
+          </div>
+        </Button>
+      </Tooltip>
+
+      <Tooltip title = "Database" placement = "right">
+        <Button 
+        style = {{
+          backgroundColor: "white",
+          maxWidth: '25px',
+          maxHeight:'30px',
+          minWidth: '25px',
+          minHeight: '30px'
+        }} onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}>
+          <div>
+            <FaUserFriends/>
           </div>
         </Button>
       </Tooltip>
@@ -173,6 +190,11 @@ class Map extends Component {
           </div>
           <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
             {this._renderToolbar()}
+          </div>
+          <div>
+            <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
+            <h1>Insert Database Here</h1>
+            </Modal>
           </div>
           <Editor
             // to make the lines/vertices easier to interact with
