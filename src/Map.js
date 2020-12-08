@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -45,24 +45,19 @@ class Map extends Component {
 
     switch(evt) {
       case 'Polyline':
-        var modeHandler = new DrawLineStringMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new DrawLineStringMode()});
         break;
       case 'Polygon':
-        var modeHandler = new DrawPolygonMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new DrawPolygonMode()});
         break;
       case 'Editing':
-        var modeHandler = new EditingMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new EditingMode()});
         break;
       case 'Marking':
-        var modeHandler = new DrawPointMode();
-        this.setState({modeHandler});
+        this.setState({modeHandler: new DrawPointMode()});
         break;
       default:
-        var modeHandler = null;
-        this.setState({modeHandler});
+        this.setState({modeHandler: null});
         break;
     }
   };
