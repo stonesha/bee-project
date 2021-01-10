@@ -4,20 +4,30 @@ import {
   GoogleMap,
   useLoadScript,
   Marker,
-  InfoWindow
+  InfoWindow,
+  DrawingManager
 } from "@react-google-maps/api";
+import {Button, ButtonGroup } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 
-//avoids too many rerenders
-const libraries = ["places"];
-const mapContainerStyle = {
+//Variables for settings of Google Map
+const libraries = ["places", "drawing"];
+
+const mapContainerStyle = { //Style of Map container
   width: window.innerWidth,
   height: window.innerHeight,
-}
-
+};
 const center = {
   lat: 39.52766,
   lng: -119.81353
-}
+};
+const options = { //Seperate options, disabling defa
+  disableDefaultUI: true,
+  zoomControl: true,
+};
+
+///////////////////////////////////////
+
 
 export default function App() {
   const {isLoaded, loadError} = useLoadScript({
@@ -28,12 +38,17 @@ export default function App() {
   if(loadError) return "error loading maps";
   if(!isLoaded) return "loading";
 
-  return <div>
+
+
+  return  (
+  <div>
     <GoogleMap 
     mapContainerStyle = {mapContainerStyle}
     zoom = {10}
-    center = {center}>
+    center = {center}
+    options = {options}>
 
     </GoogleMap>
   </div>
+  )
 }
