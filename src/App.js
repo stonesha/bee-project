@@ -26,6 +26,13 @@ const options = { //Seperate options, disabling defa
   zoomControl: true,
 };
 
+const onLoad = drawingManager => {
+  console.log(drawingManager)
+}
+
+const onPolygonComplete = polygon => {
+  console.log(polygon)
+}
 ///////////////////////////////////////
 
 
@@ -47,6 +54,11 @@ export default function App() {
     zoom = {10}
     center = {center}
     options = {options}>
+
+  <DrawingManager
+      onLoad={onLoad}
+      onPolygonComplete={onPolygonComplete}
+    />
 
     </GoogleMap>
   </div>
