@@ -20,6 +20,14 @@ import {FaRoute,
   FaMousePointer,
   FaUserFriends} from "react-icons/fa";
 
+const buttonStyle = {
+  backgroundColor: "white",
+  maxWidth: '20px',
+  maxHeight:'30px',
+  minWidth: '20px',
+  minHeight: '30px'  
+}
+
 class Map extends Component {
 
   constructor(props) {
@@ -66,20 +74,11 @@ class Map extends Component {
   _renderToolbar = () => {
     return (
       <div>
-      <ButtonGroup
-        style={{
-        }}
-          orientation='vertical'
-      >
+      <ButtonGroup orientation='vertical'>
+        
       <Tooltip title = "Default Cursor" placement = "right">
         <Button
-          style = {{
-           backgroundColor: "white",
-           maxWidth: '20px',
-           maxHeight:'30px',
-           minWidth: '20px',
-           minHeight: '30px'
-          }}
+          style = {buttonStyle}
           onClick={() => {this._switchMode(null);}}
           >
             <div>
@@ -89,13 +88,7 @@ class Map extends Component {
       </Tooltip>
       <Tooltip title = "Draw Line" placement = "right">
         <Button
-          style = {{
-           backgroundColor: "white",
-           maxWidth: '20px',
-           maxHeight:'30px',
-           minWidth: '20px',
-           minHeight: '30px'
-          }}
+          style = {buttonStyle}
           onClick={() => {this._switchMode('Polyline');}}
           >
             <div>
@@ -106,13 +99,8 @@ class Map extends Component {
 
       <Tooltip title = "Draw Area" placement = "right">
         <Button 
-        style = {{
-          backgroundColor: "white",
-          maxWidth: '25px',
-          maxHeight:'30px',
-          minWidth: '25px',
-          minHeight: '30px'
-        }} onClick={() => {this._switchMode('Polygon');}}>
+          style = {buttonStyle} 
+          onClick={() => {this._switchMode('Polygon');}}>
           <div>
             <FaDrawPolygon/>
           </div>
@@ -121,13 +109,8 @@ class Map extends Component {
 
       <Tooltip title = "Edit" placement = "right">
         <Button 
-        style = {{
-          backgroundColor: "white",
-          maxWidth: '25px',
-          maxHeight:'30px',
-          minWidth: '25px',
-          minHeight: '30px'
-        }} onClick={() => {this._switchMode('Editing');}}>
+        style = {buttonStyle}
+ onClick={() => {this._switchMode('Editing');}}>
           <div>
             <FaEdit/>
           </div>
@@ -136,13 +119,8 @@ class Map extends Component {
 
       <Tooltip title = "Mark Area" placement = "right">
         <Button 
-        style = {{
-          backgroundColor: "white",
-          maxWidth: '25px',
-          maxHeight:'30px',
-          minWidth: '25px',
-          minHeight: '30px'
-        }} onClick={() => {this._switchMode('Marking');}}>
+        style = {buttonStyle}
+        onClick={() => {this._switchMode('Marking');}}>
           <div>
             <FaMapMarkerAlt/>
           </div>
@@ -151,13 +129,8 @@ class Map extends Component {
 
       <Tooltip title = "Database" placement = "right">
         <Button 
-        style = {{
-          backgroundColor: "white",
-          maxWidth: '25px',
-          maxHeight:'30px',
-          minWidth: '25px',
-          minHeight: '30px'
-        }} onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}>
+          style = {buttonStyle}
+          onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}>
           <div>
             <FaUserFriends/>
           </div>
