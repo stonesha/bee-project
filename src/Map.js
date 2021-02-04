@@ -20,6 +20,9 @@ import {FaRoute,
   FaMousePointer,
   FaUserFriends} from "react-icons/fa";
 
+import Marker from './Marker';
+
+
 const buttonStyle = {
   backgroundColor: "white",
   maxWidth: '20px',
@@ -161,14 +164,24 @@ class Map extends Component {
               captureDoubleClick="false"
             />
           </div>
+          
           <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
             {this._renderToolbar()}
+          </div>
+          <div>
+          <Marker
+            lat={39.52766}
+            lng={-119.81353}
+            name="My Marker"
+            color="blue"
+          />
           </div>
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
             <h1>Insert Database Here</h1>
             </Modal>
           </div>
+          
           <Editor
             // to make the lines/vertices easier to interact with
             clickRadius={12}
@@ -178,6 +191,7 @@ class Map extends Component {
               this.setState({features: data})
             }}
           />
+
         </ReactMapGL>
         </div>
    );
