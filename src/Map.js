@@ -34,12 +34,12 @@ const buttonStyle = {
 }
 
 const getData = () => {
-  axios.get('https://bee-webserver.herokuapp.com//Input_Location').then(Response)
+  axios.get('https://bee-webserver.herokuapp.com/Input_Location').then(Response)
   console.log(Response)
 }
 
 const sendData = () => {
-  axios.post('https://bee-webserver.herokuapp.com//Input_Location', 
+  axios.post('https://bee-webserver.herokuapp.com/Input_Location', 
     JSON.stringify("hi")
   )
   .then(function (response) {
