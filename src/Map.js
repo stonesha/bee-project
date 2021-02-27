@@ -22,6 +22,8 @@ import {FaRoute,
 
 import Marker from './Marker';
 
+import axios from 'axios';
+
 
 const buttonStyle = {
   backgroundColor: "white",
@@ -29,6 +31,20 @@ const buttonStyle = {
   maxHeight:'30px',
   minWidth: '20px',
   minHeight: '30px'  
+}
+
+const getData = () => {
+  axios.get('https://bee-webserver.herokuapp.com//Input_Location').then(Response)
+  console.log(Response)
+}
+
+const sendData = () => {
+  axios.post('https://bee-webserver.herokuapp.com//Input_Location', 
+    JSON.stringify("hi")
+  )
+  .then(function (response) {
+    console.log(response);
+  })
 }
 
 class Map extends Component {
@@ -70,6 +86,7 @@ class Map extends Component {
       default:
         this.setState({modeHandler: null});
         break;
+
     }
   };
 
@@ -139,6 +156,24 @@ class Map extends Component {
           </div>
         </Button>
       </Tooltip>
+      <Tooltip title = "test get" placement = "right">
+        <Button 
+          style = {buttonStyle}
+          onClick={() => {getData()}}>
+          <div>
+            <FaUserFriends/>
+          </div>
+        </Button>
+      </Tooltip>
+      <Tooltip title = "test send" placement = "right">
+        <Button 
+          style = {buttonStyle}
+          onClick={() => {sendData()}}>
+          <div>
+            <FaUserFriends/>
+          </div>
+        </Button>
+      </Tooltip>
       </ButtonGroup>
       </div>
     );
@@ -158,7 +193,7 @@ class Map extends Component {
           transitionInterpolator={new FlyToInterpolator()}
           doubleClickZoom={false}>
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
-            <NavigationControl 
+            <NavigationControl
               style={{
                 color: "black"}}
               captureDoubleClick="false"
@@ -168,6 +203,7 @@ class Map extends Component {
           <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
             {this._renderToolbar()}
           </div>
+
           <div>
           <Marker
             lat={39.52766}
@@ -175,6 +211,7 @@ class Map extends Component {
             name="My Marker"
             color="blue"
           />
+          <getData>data</getData>
           </div>
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
