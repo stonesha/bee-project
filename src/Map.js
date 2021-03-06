@@ -18,7 +18,11 @@ import {FaRoute,
   FaEdit, 
   FaMapMarkerAlt, 
   FaMousePointer,
-  FaUserFriends} from "react-icons/fa";
+  FaUserFriends,
+  FaArrowCircleRight
+} from "react-icons/fa";
+
+import {BiSend} from "react-icons/bs"
 
 import Marker from './Marker';
 
@@ -38,10 +42,10 @@ const getData = () => {
   console.log(Response)
 }
 
-const sendData = () => {
-  axios.post('https://bee-webserver.herokuapp.com/Input_Location', 
-    JSON.stringify("hi")
-  )
+function sendData (data) {
+  axios.post('https://bee-webserver.herokuapp.com/Input_Location',
+    JSON.stringify(data)
+  )  
   .then(function (response) {
     console.log(response);
   })
@@ -165,12 +169,12 @@ class Map extends Component {
           </div>
         </Button>
       </Tooltip>
-      <Tooltip title = "test send" placement = "right">
+      <Tooltip title = "Send Data" placement = "right">
         <Button 
           style = {buttonStyle}
-          onClick={() => {sendData()}}>
+          onClick={() => {sendData(this.state.features)}}>
           <div>
-            <FaUserFriends/>
+            <FaArrowCircleRight/>
           </div>
         </Button>
       </Tooltip>
@@ -200,9 +204,7 @@ class Map extends Component {
             />
           </div>
           
-          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
-            {this._renderToolbar()}
-          </div>
+
 
           <div>
           <Marker
@@ -211,7 +213,6 @@ class Map extends Component {
             name="My Marker"
             color="blue"
           />
-          <getData>data</getData>
           </div>
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
@@ -228,6 +229,9 @@ class Map extends Component {
               this.setState({features: data})
             }}
           />
+          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
+            {this._renderToolbar()}
+          </div>
 
         </ReactMapGL>
         </div>
