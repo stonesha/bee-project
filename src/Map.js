@@ -35,13 +35,13 @@ const buttonStyle = {
 
 const getData = () => {
   axios.get('https://bee-webserver.herokuapp.com/Input_Location').then(Response)
-  console.log(Response)
+  console.log(response)
 }
 
-const sendData = () => {
+function sendData (data) {
   axios.post('https://bee-webserver.herokuapp.com/Input_Location', 
-    JSON.stringify("hi")
-  )
+    JSON.stringify(data)
+  )  
   .then(function (response) {
     console.log(response);
   })
@@ -211,7 +211,6 @@ class Map extends Component {
             name="My Marker"
             color="blue"
           />
-          <getData>data</getData>
           </div>
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
@@ -226,6 +225,7 @@ class Map extends Component {
             onSelect={(_) => {}}
             onUpdate={(data) => {
               this.setState({features: data})
+              sendData(data)
             }}
           />
 
