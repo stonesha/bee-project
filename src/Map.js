@@ -160,15 +160,6 @@ class Map extends Component {
           </div>
         </Button>
       </Tooltip>
-      <Tooltip title = "test get" placement = "right">
-        <Button 
-          style = {buttonStyle}
-          onClick={() => {getData()}}>
-          <div>
-            <FaUserFriends/>
-          </div>
-        </Button>
-      </Tooltip>
       <Tooltip title = "Send Data" placement = "right">
         <Button 
           style = {buttonStyle}
@@ -204,7 +195,9 @@ class Map extends Component {
             />
           </div>
           
-
+          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
+            {this._renderToolbar()}
+          </div>
 
           <div>
           <Marker
@@ -229,9 +222,6 @@ class Map extends Component {
               this.setState({features: data})
             }}
           />
-          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
-            {this._renderToolbar()}
-          </div>
 
         </ReactMapGL>
         </div>
