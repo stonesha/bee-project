@@ -23,7 +23,7 @@ import {FaRoute,
   FaSync
 } from "react-icons/fa";
 
-import MapViewDirections from 'react-native-maps-directions';
+//import MapViewDirections from 'react-native-maps-directions';
 
 import {BiSend} from "react-icons/bs"
 
