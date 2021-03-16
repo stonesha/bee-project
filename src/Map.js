@@ -44,7 +44,7 @@ const buttonStyle = {
 }
 
 const getData = () => {
-  axios.get('https://hookb.in/dmZdBYxLmzU9RRzPgj8Y').then(Response)
+  axios.get('https://hookb.in/1gjYg71G7Nfj002ykO73').then(Response)
   safe.push(Response)
   console.log(Response)
 }
@@ -52,7 +52,7 @@ const getData = () => {
 function sendData (data) {
   axios({
     method: 'post',
-    url: 'https://hookb.in/VGY9yeb9OnTE22bwzor8',
+    url: 'https://hookb.in/1gjYg71G7Nfj002ykO73',
     data: JSON.stringify({
       item1: data
     }),
