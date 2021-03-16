@@ -43,9 +43,16 @@ const getData = () => {
 }
 
 function sendData (data) {
-  axios.post('https://bee-webserver.herokuapp.com/Input_Location',
-    JSON.stringify(data)
-  )  
+  axios({
+    method: 'post',
+    url: 'https://hookb.in/VGY9yeb9OnTE22bwzor8',
+    data: JSON.stringify({
+      item1: data
+    }),
+    headers: {
+      'content-type': 'application/json; charset=utf-8'
+    }
+  })
   .then(function (response) {
     console.log(response);
   })
