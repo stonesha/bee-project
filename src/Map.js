@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
+import PolylineOverlay from './PolylineOverlay.js'
+import ReactMapGL, {NavigationControl, FlyToInterpolator, CanvasOverlay} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -12,6 +13,10 @@ import Modal from './Modal';
 
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
+
+import DeckGL from '@deck.gl/react';
+import {LineLayer} from '@deck.gl/layers';
+import {StaticMap} from 'react-map-gl';
 
 import {FaRoute, 
   FaDrawPolygon, 
@@ -43,13 +48,36 @@ const getData = () => {
 }
 
 function sendData (data) {
-  axios.post('https://bee-webserver.herokuapp.com/Input_Location',
-    JSON.stringify(data)
-  )  
+  axios({
+    method: 'post',
+    url: 'https://hookb.in/VGY9yeb9OnTE22bwzor8',
+    data: JSON.stringify({
+      item1: data
+    }),
+    headers: {
+      'content-type': 'application/json; charset=utf-8'
+    }
+  })
   .then(function (response) {
     console.log(response);
+    console.log(React.version);
   })
 }
+const data = [
+  {sourcePosition: [-122.41669, 37.7853], targetPosition: [-122.41669, 37.781]}
+];
+
+const INITIAL_VIEW_STATE = {
+  longitude: -122.41669,
+  latitude: 37.7853,
+  zoom: 13,
+  pitch: 0,
+  bearing: 0
+};
+
+const layers = [
+  new LineLayer({id: 'line-layer', data})
+];
 
 class Map extends Component {
 
@@ -64,11 +92,13 @@ class Map extends Component {
         longitude: -119.81353,
         zoom: 10
       },
+
       modeHandler: null,
       features: [{
       }],
       isModalOpen: false,
     };
+
   }
 
   
@@ -90,7 +120,6 @@ class Map extends Component {
       default:
         this.setState({modeHandler: null});
         break;
-
     }
   };
 
@@ -203,17 +232,7 @@ class Map extends Component {
               captureDoubleClick="false"
             />
           </div>
-          
 
-
-          <div>
-          <Marker
-            lat={39.52766}
-            lng={-119.81353}
-            name="My Marker"
-            color="blue"
-          />
-          </div>
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
             <h1>Insert Database Here</h1>
@@ -222,7 +241,7 @@ class Map extends Component {
           
           <Editor
             // to make the lines/vertices easier to interact with
-            clickRadius={12}
+            clickRadius={12} //Handles polygon sizes
             mode={this.state.modeHandler}
             onSelect={(_) => {}}
             onUpdate={(data) => {
