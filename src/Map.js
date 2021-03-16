@@ -45,7 +45,6 @@ const buttonStyle = {
 
 const getData = () => {
   axios.get('https://hookb.in/1gjYg71G7Nfj002ykO73').then(Response)
-  safe.push(Response)
   console.log(Response)
 }
 
