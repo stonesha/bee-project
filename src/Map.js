@@ -19,8 +19,11 @@ import {FaRoute,
   FaMapMarkerAlt, 
   FaMousePointer,
   FaUserFriends,
-  FaArrowCircleRight
+  FaArrowCircleRight,
+  FaSync
 } from "react-icons/fa";
+
+import MapViewDirections from 'react-native-maps-directions';
 
 import {BiSend} from "react-icons/bs"
 
@@ -28,6 +31,9 @@ import Marker from './Marker';
 
 import axios from 'axios';
 
+var safe = [{}]
+const origin = {latitude: 37.3318456, longitude: -122.0296002};
+const destination = {latitude: 37.771707, longitude: -122.4053769};
 
 const buttonStyle = {
   backgroundColor: "white",
@@ -38,7 +44,8 @@ const buttonStyle = {
 }
 
 const getData = () => {
-  axios.get('https://bee-webserver.herokuapp.com/Input_Location').then(Response)
+  axios.get('https://hookb.in/dmZdBYxLmzU9RRzPgj8Y').then(Response)
+  safe.push(Response)
   console.log(Response)
 }
 
@@ -74,6 +81,7 @@ class Map extends Component {
       modeHandler: null,
       features: [{
       }],
+      uuid: null,
       isModalOpen: false,
     };
   }
@@ -167,12 +175,12 @@ class Map extends Component {
           </div>
         </Button>
       </Tooltip>
-      <Tooltip title = "test get" placement = "right">
+      <Tooltip title = "Get/Refresh Data" placement = "right">
         <Button 
           style = {buttonStyle}
           onClick={() => {getData()}}>
           <div>
-            <FaUserFriends/>
+            <FaSync/>
           </div>
         </Button>
       </Tooltip>
@@ -202,18 +210,26 @@ class Map extends Component {
           onViewportChange={(viewport) => this.setState({viewport})}
           transitionDuration={100} 
           transitionInterpolator={new FlyToInterpolator()}
-          doubleClickZoom={false}>
+          doubleClickZoom={false}> 
+            
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl
               style={{
                 color: "black"}}
               captureDoubleClick="false"
             />
+            
           </div>
           
-
-
-          <div>
+     {/*     
+        <MapViewDirections
+          origin={origin}
+          destination={destination}
+       apikey={GOOGLE_MAPS_APIKEY}
+      />
+     */}
+          {/*
+         <div>
           <Marker
             lat={39.52766}
             lng={-119.81353}
@@ -221,6 +237,7 @@ class Map extends Component {
             color="blue"
           />
           </div>
+          */}
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
             <h1>Insert Database Here</h1>
@@ -235,6 +252,7 @@ class Map extends Component {
             onUpdate={(data) => {
               this.setState({features: data})
             }}
+            
           />
           <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
             {this._renderToolbar()}
