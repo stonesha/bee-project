@@ -28,12 +28,9 @@ import {FaRoute,
 import {BiSend} from "react-icons/bs"
 
 import Marker from './Marker';
-
-import axios from 'axios';
+import API from './utils/API';
 
 var safe = [{}]
-const origin = {latitude: 37.3318456, longitude: -122.0296002};
-const destination = {latitude: 37.771707, longitude: -122.4053769};
 
 const buttonStyle = {
   backgroundColor: "white",
@@ -41,27 +38,6 @@ const buttonStyle = {
   maxHeight:'30px',
   minWidth: '20px',
   minHeight: '30px'  
-}
-
-const getData = () => {
-  axios.get('https://hookb.in/1gjYg71G7Nfj002ykO73').then(Response)
-  console.log(Response)
-}
-
-function sendData (data) {
-  axios({
-    method: 'post',
-    url: 'https://hookb.in/1gjYg71G7Nfj002ykO73',
-    data: JSON.stringify({
-      item1: data
-    }),
-    headers: {
-      'content-type': 'application/json; charset=utf-8'
-    }
-  })
-  .then(function (response) {
-    console.log(response);
-  })
 }
 
 class Map extends Component {
@@ -174,29 +150,23 @@ class Map extends Component {
           </div>
         </Button>
       </Tooltip>
-      <Tooltip title = "Get/Refresh Data" placement = "right">
-        <Button 
-          style = {buttonStyle}
-          onClick={() => {getData()}}>
-          <div>
-            <FaSync/>
-          </div>
-        </Button>
-      </Tooltip>
-      <Tooltip title = "Send Data" placement = "right">
-        <Button 
-          style = {buttonStyle}
-          onClick={() => {sendData(this.state.features)}}>
-          <div>
-            <FaArrowCircleRight/>
-          </div>
-        </Button>
-      </Tooltip>
       </ButtonGroup>
       </div>
     );
   };
 
+  _sendRecentFeature = async (feature) => {
+    feature = JSON.stringify(feature); //convert object into json string
+    console.log(feature);
+
+    try {
+      const response = await API.post('/Input_Location', feature);
+      console.log("Response from server: " , response);
+    } catch (e) {
+      console.log("Something went wrong, error : ", e);
+    }
+
+  };
 
   render() {
     return(
@@ -219,24 +189,6 @@ class Map extends Component {
             />
             
           </div>
-          
-     {/*     
-        <MapViewDirections
-          origin={origin}
-          destination={destination}
-       apikey={GOOGLE_MAPS_APIKEY}
-      />
-     */}
-          {/*
-         <div>
-          <Marker
-            lat={39.52766}
-            lng={-119.81353}
-            name="My Marker"
-            color="blue"
-          />
-          </div>
-          */}
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
             <h1>Insert Database Here</h1>
@@ -250,6 +202,9 @@ class Map extends Component {
             onSelect={(_) => {}}
             onUpdate={(data) => {
               this.setState({features: data})
+
+              if(data.editType === "addFeature")//only send data upon finishing a feature
+                this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
             }}
             
           />
