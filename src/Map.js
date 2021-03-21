@@ -156,7 +156,6 @@ class Map extends Component {
   };
 
   _sendRecentFeature = async (feature) => {
-    feature = JSON.stringify(feature); //convert object into json string
     console.log(feature);
 
     try {
