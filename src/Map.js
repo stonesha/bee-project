@@ -19,15 +19,18 @@ import {FaRoute,
   FaMapMarkerAlt, 
   FaMousePointer,
   FaUserFriends,
-  FaArrowCircleRight
+  FaArrowCircleRight,
+  FaSync
 } from "react-icons/fa";
+
+//import MapViewDirections from 'react-native-maps-directions';
 
 import {BiSend} from "react-icons/bs"
 
 import Marker from './Marker';
+import API from './utils/API';
 
-import axios from 'axios';
-
+var safe = [{}]
 
 const buttonStyle = {
   backgroundColor: "white",
@@ -35,20 +38,6 @@ const buttonStyle = {
   maxHeight:'30px',
   minWidth: '20px',
   minHeight: '30px'  
-}
-
-const getData = () => {
-  axios.get('https://bee-webserver.herokuapp.com/Input_Location').then(Response)
-  console.log(Response)
-}
-
-function sendData (data) {
-  axios.post('https://bee-webserver.herokuapp.com/Input_Location',
-    JSON.stringify(data)
-  )  
-  .then(function (response) {
-    console.log(response);
-  })
 }
 
 class Map extends Component {
@@ -67,6 +56,7 @@ class Map extends Component {
       modeHandler: null,
       features: [{
       }],
+      uuid: null,
       isModalOpen: false,
     };
   }
@@ -174,6 +164,17 @@ class Map extends Component {
     );
   };
 
+  _sendRecentFeature = async (feature) => {
+    console.log(feature);
+
+    try {
+      const response = await API.post('/Input_Location', feature);
+      console.log("Response from server: " , response);
+    } catch (e) {
+      console.log("Something went wrong, error : ", e);
+    }
+
+  };
 
   render() {
     return(
@@ -186,7 +187,8 @@ class Map extends Component {
           onViewportChange={(viewport) => this.setState({viewport})}
           transitionDuration={100} 
           transitionInterpolator={new FlyToInterpolator()}
-          doubleClickZoom={false}>
+          doubleClickZoom={false}> 
+            
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl
               style={{
@@ -206,6 +208,7 @@ class Map extends Component {
             name="My Marker"
             color="blue"
           />
+            
           </div>
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
@@ -220,7 +223,11 @@ class Map extends Component {
             onSelect={(_) => {}}
             onUpdate={(data) => {
               this.setState({features: data})
+
+              if(data.editType === "addFeature")//only send data upon finishing a feature
+                this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
             }}
+            
           />
 
         </ReactMapGL>
