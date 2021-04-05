@@ -150,15 +150,6 @@ class Map extends Component {
           </div>
         </Button>
       </Tooltip>
-      <Tooltip title = "Send Data" placement = "right">
-        <Button 
-          style = {buttonStyle}
-          onClick={() => {sendData(this.state.features)}}>
-          <div>
-            <FaArrowCircleRight/>
-          </div>
-        </Button>
-      </Tooltip>
       </ButtonGroup>
       </div>
     );
@@ -201,15 +192,6 @@ class Map extends Component {
             {this._renderToolbar()}
           </div>
 
-          <div>
-          <Marker
-            lat={39.52766}
-            lng={-119.81353}
-            name="My Marker"
-            color="blue"
-          />
-            
-          </div>
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
             <h1>Insert Database Here</h1>
