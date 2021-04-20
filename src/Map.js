@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -23,12 +23,11 @@ import {FaRoute,
   FaSync
 } from "react-icons/fa";
 
-//import MapViewDirections from 'react-native-maps-directions';
-
 import {BiSend} from "react-icons/bs"
 
 import Marker from './Marker';
 import API from './utils/API';
+import Prompt from './utils/Popups'
 
 var safe = [{}]
 
@@ -58,9 +57,9 @@ class Map extends Component {
       }],
       uuid: null,
       isModalOpen: false,
+      togglePopup: false,
     };
   }
-
   
   _switchMode = (evt) => {
 
@@ -167,6 +166,14 @@ class Map extends Component {
 
   };
 
+  _sendPopup = () => {
+      Prompt.Popup.plugins().prompt('', 'Type your name', function (value) {
+      Prompt.Popup.alert('You typed: ' + value);
+  });
+  }
+
+  
+
   render() {
     return(
         <div>
@@ -179,6 +186,15 @@ class Map extends Component {
           transitionDuration={100} 
           transitionInterpolator={new FlyToInterpolator()}
           doubleClickZoom={false}> 
+        <Popup
+          latitude={39.52766}
+          longitude={-119.81353}
+          closeButton={true}
+          closeOnClick={false}
+          onClose={() => {togglePopup(false)}}
+          anchor="top" >
+          <div>You are here</div>
+        </Popup>
             
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl
@@ -209,7 +225,6 @@ class Map extends Component {
               if(data.editType === "addFeature")//only send data upon finishing a feature
                 this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
             }}
-            
           />
 
         </ReactMapGL>
