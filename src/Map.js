@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -9,9 +9,12 @@ import {
   DrawPointMode,
 } from "react-map-gl-draw";
 import Modal from './Modal';
+import SurveyComponent from './utils/utils.js';
+import Prompt from './utils/utils.js';
 
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
+//import Popup from 'react-popup'
 
 import {FaRoute, 
   FaDrawPolygon, 
@@ -22,8 +25,6 @@ import {FaRoute,
   FaArrowCircleRight,
   FaSync
 } from "react-icons/fa";
-
-//import MapViewDirections from 'react-native-maps-directions';
 
 import {BiSend} from "react-icons/bs"
 
@@ -58,9 +59,10 @@ class Map extends Component {
       }],
       uuid: null,
       isModalOpen: false,
+      togglePopup: false,
+      isSelect: null,
     };
   }
-
   
   _switchMode = (evt) => {
 
@@ -124,7 +126,7 @@ class Map extends Component {
       <Tooltip title = "Edit" placement = "right">
         <Button 
         style = {buttonStyle}
- onClick={() => {this._switchMode('Editing');}}>
+        onClick={() => {this._switchMode('Editing');}}>
           <div>
             <FaEdit/>
           </div>
@@ -141,15 +143,6 @@ class Map extends Component {
         </Button>
       </Tooltip>
 
-      <Tooltip title = "Database" placement = "right">
-        <Button 
-          style = {buttonStyle}
-          onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}>
-          <div>
-            <FaUserFriends/>
-          </div>
-        </Button>
-      </Tooltip>
       </ButtonGroup>
       </div>
     );
@@ -167,6 +160,14 @@ class Map extends Component {
 
   };
 
+  _sendPopup = () => {
+      Prompt.Popup.plugins().prompt('', 'Type your name', function (value) {
+      Prompt.Popup.alert('You typed: ' + value);
+  });
+  }
+
+  
+
   render() {
     return(
         <div>
@@ -179,18 +180,21 @@ class Map extends Component {
           transitionDuration={100} 
           transitionInterpolator={new FlyToInterpolator()}
           doubleClickZoom={false}> 
-            
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl
               style={{
                 color: "black"}}
               captureDoubleClick="false"
             />
-            
           </div>
+          
+          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
+            {this._renderToolbar()}
+          </div>
+
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
-            <h1>Insert Database Here</h1>
+              <SurveyComponent />
             </Modal>
           </div>
           
@@ -198,18 +202,23 @@ class Map extends Component {
             // to make the lines/vertices easier to interact with
             clickRadius={12}
             mode={this.state.modeHandler}
-            onSelect={(_) => {}}
-            onUpdate={(data) => {
-              this.setState({features: data})
+            onSelect={(featureStyle) => {
+              console.log(featureStyle);
+              if(featureStyle.state == "selectedEditHandleIndex")
+              {
+                this.setState({isModalOpen: !this.state.isModalOpen});
+              }
+            }}
 
-              if(data.editType === "addFeature")//only send data upon finishing a feature
+            onUpdate={(data) => {
+              this.setState({features: data});
+              if(data.editType === "addFeature") {//only send data upon finishing a feature
                 this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
+                this.setState({isModalOpen: !this.state.isModalOpen});
+              }
             }}
             
           />
-          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
-            {this._renderToolbar()}
-          </div>
 
         </ReactMapGL>
         </div>
