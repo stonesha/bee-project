@@ -17,17 +17,17 @@ class SurveyComponent extends Component {
             questions: [
                 {
                     type: "checkbox",
-                    title: "test",
+                    title: "Safe/Not Safe",
                     choices: [
-                        "yes",
-                        "no"
+                        "Safe Zone",
+                        "Hazard Zone"
                     ],
                     
                 }
             ],
         }
         const survey = new Survey.Model(json);
-        
+
         return (
             <Survey.Survey model={survey}/>
         );
