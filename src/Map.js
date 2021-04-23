@@ -9,9 +9,12 @@ import {
   DrawPointMode,
 } from "react-map-gl-draw";
 import Modal from './Modal';
+import SurveyComponent from './utils/utils.js';
+import Prompt from './utils/utils.js';
 
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
+//import Popup from 'react-popup'
 
 import {FaRoute, 
   FaDrawPolygon, 
@@ -27,7 +30,6 @@ import {BiSend} from "react-icons/bs"
 
 import Marker from './Marker';
 import API from './utils/API';
-import Prompt from './utils/Popups'
 
 var safe = [{}]
 
@@ -58,6 +60,7 @@ class Map extends Component {
       uuid: null,
       isModalOpen: false,
       togglePopup: false,
+      isSelect: null,
     };
   }
   
@@ -123,7 +126,7 @@ class Map extends Component {
       <Tooltip title = "Edit" placement = "right">
         <Button 
         style = {buttonStyle}
- onClick={() => {this._switchMode('Editing');}}>
+        onClick={() => {this._switchMode('Editing');}}>
           <div>
             <FaEdit/>
           </div>
@@ -140,15 +143,6 @@ class Map extends Component {
         </Button>
       </Tooltip>
 
-      <Tooltip title = "Database" placement = "right">
-        <Button 
-          style = {buttonStyle}
-          onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}>
-          <div>
-            <FaUserFriends/>
-          </div>
-        </Button>
-      </Tooltip>
       </ButtonGroup>
       </div>
     );
@@ -186,16 +180,6 @@ class Map extends Component {
           transitionDuration={100} 
           transitionInterpolator={new FlyToInterpolator()}
           doubleClickZoom={false}> 
-        <Popup
-          latitude={39.52766}
-          longitude={-119.81353}
-          closeButton={true}
-          closeOnClick={false}
-          onClose={() => {togglePopup(false)}}
-          anchor="top" >
-          <div>You are here</div>
-        </Popup>
-            
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl
               style={{
@@ -210,7 +194,7 @@ class Map extends Component {
 
           <div>
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
-            <h1>Insert Database Here</h1>
+              <SurveyComponent />
             </Modal>
           </div>
           
@@ -218,13 +202,22 @@ class Map extends Component {
             // to make the lines/vertices easier to interact with
             clickRadius={12}
             mode={this.state.modeHandler}
-            onSelect={(_) => {}}
-            onUpdate={(data) => {
-              this.setState({features: data})
-
-              if(data.editType === "addFeature")//only send data upon finishing a feature
-                this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
+            onSelect={(featureStyle) => {
+              console.log(featureStyle);
+              if(featureStyle.state == "selectedEditHandleIndex")
+              {
+                this.setState({isModalOpen: !this.state.isModalOpen});
+              }
             }}
+
+            onUpdate={(data) => {
+              this.setState({features: data});
+              if(data.editType === "addFeature") {//only send data upon finishing a feature
+                this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
+                this.setState({isModalOpen: !this.state.isModalOpen});
+              }
+            }}
+            
           />
 
         </ReactMapGL>
