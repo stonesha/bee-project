@@ -2,7 +2,7 @@ import Popup from 'react-popup'
 import React, { Component } from 'react';
 import { render } from '@testing-library/react';
 
-class Prompt extends Component {
+export class Prompt extends Component {
     constructor(props) {
         super(props);
 
