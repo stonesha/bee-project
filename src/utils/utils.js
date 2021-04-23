@@ -17,12 +17,17 @@ class SurveyComponent extends Component {
             questions: [
                 {
                     type: "checkbox",
+                    name: "Zone Type",
                     title: "Safe/Not Safe",
                     choices: [
                         "Safe Zone",
                         "Hazard Zone"
                     ],
-                    
+                }, {
+                    type: "comment",
+                    name: "Description",
+                    title: "Description of Zone",
+                    placeHolder: "Describe the zone in detail..."
                 }
             ],
         }
