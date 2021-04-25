@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DeckGL, { GeoJsonLayer , LineLayer} from "deck.gl";
 import './Map.css';
 import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup} from 'react-map-gl';
 import {
@@ -7,14 +8,16 @@ import {
   DrawLineStringMode,
   DrawPolygonMode,
   DrawPointMode,
+  Source,
+  Layer
 } from "react-map-gl-draw";
 import Modal from './Modal';
 import SurveyComponent from './utils/utils.js';
 import Prompt from './utils/utils.js';
+//import * from './utils/routes.js'
 
 import {Button, ButtonGroup } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
-//import Popup from 'react-popup'
 
 import {FaRoute, 
   FaDrawPolygon, 
@@ -40,6 +43,33 @@ const buttonStyle = {
   minWidth: '20px',
   minHeight: '30px'  
 }
+const data = [
+  {sourcePosition: [-122.41669, 37.7853], targetPosition: [-122.41669, 37.781]}
+];
+
+// const geojsontest = [{
+//   type: "FeatureCollection",
+//   features: [
+//     {type: 'Feature', geometry: 'LineString', coordinates: '[[39, 119], [41, 121]]'}
+//   ]
+// }];
+
+const geojsontest = [{
+  "type": "LineString",
+  "coordinates": [[39, 119], [41, 121]]
+}];
+
+const layerRoute = new GeoJsonLayer({
+  id: "geojson-layer",
+  data,
+  filled: true,
+  stroked: false,
+  extruded: true,
+  pickable: true,
+  lineJointRounded: true,
+  getRadius: 50,
+  getElevation: 30,
+  lineWidthScale: 20,})
 
 class Map extends Component {
 
@@ -57,10 +87,12 @@ class Map extends Component {
       modeHandler: null,
       features: [{
       }],
-      uuid: null,
       isModalOpen: false,
       togglePopup: false,
       isSelect: null,
+      data : [
+        {sourcePosition: [39.52766, -119.81353], targetPosition: [40.52766, -120.81353]}
+      ]
     };
   }
   
@@ -148,6 +180,8 @@ class Map extends Component {
     );
   };
 
+  
+
   _sendRecentFeature = async (feature) => {
     console.log(feature);
 
@@ -169,8 +203,13 @@ class Map extends Component {
   
 
   render() {
+    const {route} = this.props;
+    const layers = [
+      new LineLayer ({id: 'line-layer', data})
+    ]
     return(
         <div>
+        <DeckGL layers={[layers]} initialViewState={{ ...this.state.viewport}} controller={true}></DeckGL>
         <ReactMapGL {...this.state.viewport}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
@@ -180,6 +219,7 @@ class Map extends Component {
           transitionDuration={100} 
           transitionInterpolator={new FlyToInterpolator()}
           doubleClickZoom={false}> 
+
           <div style={{position: 'absolute', left: '1%', top: '1%'}}>
             <NavigationControl
               style={{
@@ -187,7 +227,7 @@ class Map extends Component {
               captureDoubleClick="false"
             />
           </div>
-          
+
           <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
             {this._renderToolbar()}
           </div>
@@ -203,24 +243,37 @@ class Map extends Component {
             clickRadius={12}
             mode={this.state.modeHandler}
             onSelect={(featureStyle) => {
-              console.log(featureStyle);
-              if(featureStyle.state == "selectedEditHandleIndex")
-              {
-                this.setState({isModalOpen: !this.state.isModalOpen});
-              }
             }}
 
             onUpdate={(data) => {
               this.setState({features: data});
-              if(data.editType === "addFeature") {//only send data upon finishing a feature
+              if(data.editType === "addFeature" && this.state.modeHandler !== 'Polyline') {//only send data upon finishing a feature
                 this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
                 this.setState({isModalOpen: !this.state.isModalOpen});
+                this._switchMode('Editing');
               }
             }}
             
           />
+        {/* <Source id='polylineLayer' type='geojson' data={layerRoute}>
+        <Layer
+          id='lineLayer'
+          type='line'
+          source='layerRoute'
+          layout={{
+           'line-join': 'round',
+           'line-cap': 'round',
+          }}
+          paint={{
+           'line-color': 'rgba(3, 170, 238, 0.5)',
+            'line-width': 5,
+          }}
+        />
+      </Source> */}
 
         </ReactMapGL>
+        
+
         </div>
    );
   }
