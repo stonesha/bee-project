@@ -8,27 +8,27 @@ import axios from "axios";
 
 Survey.StylesManager.applyTheme("default");
 
-var surveyValueChanged = function (sender, options) {
-    var el = document.getElementById(options.name);
-    if (el) {
-        el.value = options.value;
-    }
-};
-function sendDataToServer(survey) {
-    axios({
-        method: 'post',
-        url: '',
-        data: JSON.stringify({
-          item1: survey
-        }),
-        headers: {
-          'content-type': 'application/json; charset=utf-8'
-        }
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-  }
+// var surveyValueChanged = function (sender, options) {
+//     var el = document.getElementById(options.name);
+//     if (el) {
+//         el.value = options.value;
+//     }
+// };
+// function sendDataToServer(survey) {
+//     axios({
+//         method: 'post',
+//         url: '',
+//         data: JSON.stringify({
+//           item1: survey
+//         }),
+//         headers: {
+//           'content-type': 'application/json; charset=utf-8'
+//         }
+//       })
+//       .then(function (response) {
+//         console.log(response);
+//       })
+//   }
 
 
 class SurveyComponent extends Component {
@@ -49,22 +49,32 @@ class SurveyComponent extends Component {
             completedHtml: "Report Sent.",
             questions: [
                 {
-                    type: "checkbox",
-                    name: "Zone Type",
-                    title: "Safe/Not Safe",
-                    choices: [
-                        "Safe Zone",
-                        "Hazard Zone"
-                    ],
-                }, {
+                    type: "text",
+                    name: "severity",
+                    title: "Severity",
+                    placeHolder: "Explain severity..."
+                },
+                {
+                    type: "text",
+                    name: "type",
+                    title: "Evacuation Type",
+                    placeHolder: "Ex: flood, fire, etc..."
+                }, 
+                {
                     type: "comment",
-                    name: "Description",
-                    title: "Description of Zone",
-                    placeHolder: "Describe the zone in detail..."
+                    name: "instructions",
+                    title: "Evacuation Instructions",
+                    placeHolder: "Describe the instructions..."
                 }
             ],
         }
         const survey = new Survey.Model(json);
+        survey.onComplete.add(function (sender, options) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://bee-cors-proxy.herokuapp.com/https://bee-webserver.herokuapp.com/Input_Instructions");
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+            xhr.send(JSON.stringify(sender.data));
+        });
         return (
             <Survey.Survey 
             model={survey}

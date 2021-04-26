@@ -54,6 +54,9 @@ const data = [
 //   ]
 // }];
 
+const PrettyPrintJson = ({data}) => (<div><pre>{ 
+  JSON.stringify(data, null, 2) }</pre></div>);
+
 const geojsontest = [{
   "type": "LineString",
   "coordinates": [[39, 119], [41, 121]]
@@ -90,6 +93,7 @@ class Map extends Component {
       isModalOpen: false,
       togglePopup: false,
       isSelect: null,
+      safe: 0,
       data : [
         {sourcePosition: [39.52766, -119.81353], targetPosition: [40.52766, -120.81353]}
       ]
@@ -174,6 +178,26 @@ class Map extends Component {
           </div>
         </Button>
       </Tooltip>
+      
+      <Tooltip title = "Send Evacuation Instructions" placement = "right">
+        <Button 
+        style = {buttonStyle}
+        onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}>
+          <div>
+            <FaArrowCircleRight/>
+          </div>
+        </Button>
+      </Tooltip>
+
+      <Tooltip title = "Get Safe Count" placement = "right">
+        <Button 
+        style = {buttonStyle}
+        onClick={() => {this._getSafeCount(this.state.safe)}}>
+          <div>
+            <FaUserFriends/>
+          </div>
+        </Button>
+      </Tooltip>
 
       </ButtonGroup>
       </div>
@@ -194,6 +218,19 @@ class Map extends Component {
 
   };
 
+  _getSafeCount = async (count) => {
+    try {
+      const response = await API.get('/Return_Safe_Count', count);
+      console.log("Response from server: " , response);
+      var object = JSON.stringify(response.data);
+      alert(object);
+      console.log(response);
+      return response;
+    } catch (e) {
+      console.log("Something went wrong, error : ", e);
+    }
+  }
+
   _sendPopup = () => {
       Prompt.Popup.plugins().prompt('', 'Type your name', function (value) {
       Prompt.Popup.alert('You typed: ' + value);
@@ -209,7 +246,7 @@ class Map extends Component {
     ]
     return(
         <div>
-        <DeckGL layers={[layers]} initialViewState={{ ...this.state.viewport}} controller={true}></DeckGL>
+        {/* <DeckGL layers={[layers]} initialViewState={{ ...this.state.viewport}} controller={true}></DeckGL> */}
         <ReactMapGL {...this.state.viewport}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
@@ -247,10 +284,10 @@ class Map extends Component {
 
             onUpdate={(data) => {
               this.setState({features: data});
-              if(data.editType === "addFeature" && this.state.modeHandler !== 'Polyline') {//only send data upon finishing a feature
+              if(data.editType === "addFeature") {//only send data upon finishing a feature
                 this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
-                this.setState({isModalOpen: !this.state.isModalOpen});
-                this._switchMode('Editing');
+                //this.setState({isModalOpen: !this.state.isModalOpen});
+                //this._switchMode('Editing');
               }
             }}
             
