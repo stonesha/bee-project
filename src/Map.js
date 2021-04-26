@@ -377,7 +377,7 @@ class Map extends Component {
             name="My Marker"
             color="blue"
           /> */}
-          <img class = "img" src = 'location.png' />
+          {/* <img class = "img" src = 'location.png' /> */}
           </Marker> 
           </div>
 
