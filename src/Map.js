@@ -173,7 +173,7 @@ class Map extends Component {
         </Button>
       </Tooltip>
 
-      <Tooltip title = "Mark Area" placement = "right">
+      <Tooltip title = "Mark End Point" placement = "right">
         <Button 
         style = {buttonStyle}
         onClick={() => {this._switchMode('Marking');}}>
