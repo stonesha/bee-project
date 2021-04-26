@@ -26,6 +26,7 @@ import {FaRoute,
   FaMousePointer,
   FaUserFriends,
   FaArrowCircleRight,
+  FaCompressArrowsAlt,
   FaSync
 } from "react-icons/fa";
 
@@ -94,6 +95,8 @@ class Map extends Component {
       togglePopup: false,
       isSelect: null,
       safe: 0,
+      newLat: 0,
+      newLong: 0,
       data : [
         {sourcePosition: [39.52766, -119.81353], targetPosition: [40.52766, -120.81353]}
       ]
@@ -199,6 +202,16 @@ class Map extends Component {
         </Button>
       </Tooltip>
 
+      <Tooltip title = "Get Location" placement = "right">
+        <Button 
+        style = {buttonStyle}
+        onClick={() => {this._getLocation(this.state.location)}}>
+          <div>
+            <FaCompressArrowsAlt/>
+          </div>
+        </Button>
+      </Tooltip>
+
       </ButtonGroup>
       </div>
     );
@@ -231,13 +244,41 @@ class Map extends Component {
     }
   }
 
+  _getLocation = async (location) => {
+    try {
+      const response = await API.get('/Get_User_Locations', location);
+      console.log("Response from server: " , response);
+      var object = JSON.stringify(response.data);
+      var split = object.split('|');
+      for(var i = 1; i < split.length - 1; i++)
+      {
+       console.log(split[i]);
+       
+        if(split[i].includes('n'))
+          var test = split[i].split('l');
+          console.log("hello "+ split[i]);
+      }
+      // var test = split[14].split(' ');
+      // console.log(test[0]);
+      // console.log(test[1]);
+      // console.log(object);
+      alert(split);
+      
+      this.newLat = test[0];
+      this.newLong = test[1];
+
+    } catch (e) {
+      console.log("Something went wrong, error : ", e);
+    }
+  }
+
+
   _sendPopup = () => {
       Prompt.Popup.plugins().prompt('', 'Type your name', function (value) {
       Prompt.Popup.alert('You typed: ' + value);
   });
   }
 
-  
 
   render() {
     const {route} = this.props;
@@ -247,6 +288,7 @@ class Map extends Component {
     return(
         <div>
         {/* <DeckGL layers={[layers]} initialViewState={{ ...this.state.viewport}} controller={true}></DeckGL> */}
+        
         <ReactMapGL {...this.state.viewport}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
@@ -274,6 +316,15 @@ class Map extends Component {
               <SurveyComponent />
             </Modal>
           </div>
+
+          {/* <div>
+          <Marker
+            lat={this.newLat}
+            lng={this.newLong}
+            name="My Marker"
+            color="blue"
+          />
+          </div> */}
           
           <Editor
             // to make the lines/vertices easier to interact with
@@ -287,7 +338,7 @@ class Map extends Component {
               if(data.editType === "addFeature") {//only send data upon finishing a feature
                 this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
                 //this.setState({isModalOpen: !this.state.isModalOpen});
-                //this._switchMode('Editing');
+                this._switchMode('Editing');
               }
             }}
             
