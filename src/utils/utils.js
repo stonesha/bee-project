@@ -55,17 +55,17 @@ class SurveyComponent extends Component {
                     placeHolder: "Explain severity..."
                 },
                 {
+                    type: "comment",
+                    name: "instructions",
+                    title: "Evacuation Instructions",
+                    placeHolder: "Describe the instructions..."
+                },
+                {
                     type: "text",
                     name: "type",
                     title: "Evacuation Type",
                     placeHolder: "Ex: flood, fire, etc..."
                 }, 
-                {
-                    type: "comment",
-                    name: "instructions",
-                    title: "Evacuation Instructions",
-                    placeHolder: "Describe the instructions..."
-                }
             ],
         }
         const survey = new Survey.Model(json);
