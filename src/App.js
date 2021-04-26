@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './App.css';
 import Map from './Map';
 
@@ -9,10 +8,6 @@ class App extends Component {
   };
   componentDidMount () {
     demoAsyncCall().then(() => this.setState({ loading: false }));
-    const script = document.createElement("Script");
-    script.src = "https://unpkg.com/survey-react"
-    script.async = true;
-    document.body.appendChild(script)
   }
   /*
   constructor(){
