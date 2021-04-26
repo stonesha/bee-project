@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DeckGL, { GeoJsonLayer , LineLayer} from "deck.gl";
 import './Map.css';
-import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, FlyToInterpolator, Popup, Marker} from 'react-map-gl';
 import {
   Editor,
   EditingMode,
@@ -9,7 +9,7 @@ import {
   DrawPolygonMode,
   DrawPointMode,
   Source,
-  Layer
+  Layer,
 } from "react-map-gl-draw";
 import Modal from './Modal';
 import SurveyComponent from './utils/utils.js';
@@ -27,12 +27,12 @@ import {FaRoute,
   FaUserFriends,
   FaArrowCircleRight,
   FaCompressArrowsAlt,
-  FaSync
+  FaThumbsUp
 } from "react-icons/fa";
 
 import {BiSend} from "react-icons/bs"
 
-import Marker from './Marker';
+import Markers from './Marker';
 import API from './utils/API';
 
 var safe = [{}]
@@ -88,6 +88,7 @@ class Map extends Component {
         longitude: -119.81353,
         zoom: 10
       },
+      userLocation: {},
       modeHandler: null,
       features: [{
       }],
@@ -99,7 +100,7 @@ class Map extends Component {
       newLong: 0,
       data : [
         {sourcePosition: [39.52766, -119.81353], targetPosition: [40.52766, -120.81353]}
-      ]
+      ],
     };
   }
   
@@ -202,6 +203,16 @@ class Map extends Component {
         </Button>
       </Tooltip>
 
+      <Tooltip title = "Get Acknowledged Count" placement = "right">
+        <Button 
+        style = {buttonStyle}
+        onClick={() => {this._getAckCount(this.state.safe)}}>
+          <div>
+            <FaThumbsUp/>
+          </div>
+        </Button>
+      </Tooltip>
+
       <Tooltip title = "Get Location" placement = "right">
         <Button 
         style = {buttonStyle}
@@ -244,33 +255,68 @@ class Map extends Component {
     }
   }
 
+  _getAckCount = async (acknowledge) => {
+    try {
+      const response = await API.get('/Return_Acknowledge_Count', acknowledge);
+      console.log("Response from server: " , response);
+      var object = JSON.stringify(response.data);
+      alert(object);
+      console.log(response);
+      return response;
+    } catch (e) {
+      console.log("Something went wrong, error : ", e);
+    }
+  }
+
   _getLocation = async (location) => {
     try {
       const response = await API.get('/Get_User_Locations', location);
       console.log("Response from server: " , response);
       var object = JSON.stringify(response.data);
       var split = object.split('|');
-      for(var i = 1; i < split.length - 1; i++)
-      {
-       console.log(split[i]);
+      // for(var i = 1; i < split.length - 1; i++)
+      // {
+      //  console.log(split[i]);
        
-        if(split[i].includes('n'))
-          var test = split[i].split('l');
-          console.log("hello "+ split[i]);
-      }
-      // var test = split[14].split(' ');
-      // console.log(test[0]);
-      // console.log(test[1]);
-      // console.log(object);
-      alert(split);
+      //   // if(split[i].includes('n'))
+      //   //   var test = split[i].split('l');
+      //   //   console.log("hello "+ split[i]);
+      // }
+      //  var test = split[19].split(' ');
+      //  console.log(test[0]);
+      //  console.log(test[1]);
+      console.log(object);
+      alert(object);
       
-      this.newLat = test[0];
-      this.newLong = test[1];
+      // this.state.newLat = test[0];
+      // this.state.newLong = test[1];
+
+      // console.log(this.state.newLat);
 
     } catch (e) {
       console.log("Something went wrong, error : ", e);
     }
   }
+
+  // _setUserLocation = () => {
+  //   navigator.geolocation.getCurrentPosition(position => {
+  //      let setUserLocation = {
+  //          lat: position.coords.latitude,
+  //          long: position.coords.longitude
+  //       };
+  //      let newViewport = {
+  //         height: "100vh",
+  //         width: "100vw",
+  //         latitude: position.coords.latitude,
+  //         longitude: position.coords.longitude,
+  //         zoom: 10
+  //       };
+  //       this.setState({
+  //         viewport: newViewport,
+  //         userLocation: setUserLocation
+  //      });
+  //   });
+  // };
 
 
   _sendPopup = () => {
@@ -316,16 +362,25 @@ class Map extends Component {
               <SurveyComponent />
             </Modal>
           </div>
+          <div>
 
-          {/* <div>
-          <Marker
-            lat={this.newLat}
-            lng={this.newLong}
+            
+          <Marker 
+          latitude={39.52766}
+          longitude={-119.81353}
+          offsetLeft={-20}
+          offsetTop={-10}>
+            
+          {/* <Markers
+            lat={39.52766}
+            lng={-119.81353}
             name="My Marker"
             color="blue"
-          />
-          </div> */}
-          
+          /> */}
+          <img class = "img" src = 'location.png' />
+          </Marker> 
+          </div>
+
           <Editor
             // to make the lines/vertices easier to interact with
             clickRadius={12}
