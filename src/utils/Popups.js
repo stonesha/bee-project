@@ -1,8 +1,9 @@
+//Unable to implement
 import Popup from 'react-popup'
 import React, { Component } from 'react';
 import { render } from '@testing-library/react';
 
-export class Prompt extends Component {
+class Prompt extends Component {
     constructor(props) {
         super(props);
 
