@@ -8,29 +8,6 @@ import axios from "axios";
 
 Survey.StylesManager.applyTheme("default");
 
-// var surveyValueChanged = function (sender, options) {
-//     var el = document.getElementById(options.name);
-//     if (el) {
-//         el.value = options.value;
-//     }
-// };
-// function sendDataToServer(survey) {
-//     axios({
-//         method: 'post',
-//         url: '',
-//         data: JSON.stringify({
-//           item1: survey
-//         }),
-//         headers: {
-//           'content-type': 'application/json; charset=utf-8'
-//         }
-//       })
-//       .then(function (response) {
-//         console.log(response);
-//       })
-//   }
-
-
 class SurveyComponent extends Component {
     constructor(props) {
         super(props)
@@ -44,7 +21,8 @@ class SurveyComponent extends Component {
             isCompleted: true
         })
     }
-    render() {
+    render() { 
+        //Report
         var json = {
             completedHtml: "Report Sent.",
             questions: [
@@ -71,10 +49,12 @@ class SurveyComponent extends Component {
         const survey = new Survey.Model(json);
         survey.onComplete.add(function (sender, options) {
             var xhr = new XMLHttpRequest();
+            //Opens connection the Input Instructions, sets the type, stringify, and send
             xhr.open("POST", "https://bee-cors-proxy.herokuapp.com/https://bee-webserver.herokuapp.com/Input_Instructions");
             xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
             xhr.send(JSON.stringify(sender.data));
         });
+        //Renders the Survey 
         return (
             <Survey.Survey 
             model={survey}

@@ -48,13 +48,6 @@ const data = [
   {sourcePosition: [-122.41669, 37.7853], targetPosition: [-122.41669, 37.781]}
 ];
 
-// const geojsontest = [{
-//   type: "FeatureCollection",
-//   features: [
-//     {type: 'Feature', geometry: 'LineString', coordinates: '[[39, 119], [41, 121]]'}
-//   ]
-// }];
-
 const PrettyPrintJson = ({data}) => (<div><pre>{ 
   JSON.stringify(data, null, 2) }</pre></div>);
 
@@ -84,23 +77,17 @@ class Map extends Component {
         width: window.innerWidth,
         height: window.innerHeight,
         //Reno Latitude and Longitude
-        latitude: 39.52766,
+        latitude: 39.52766, 
         longitude: -119.81353,
         zoom: 10
       },
-      userLocation: {},
       modeHandler: null,
       features: [{
       }],
       isModalOpen: false,
-      togglePopup: false,
-      isSelect: null,
       safe: 0,
-      newLat: 0,
-      newLong: 0,
-      data : [
-        {sourcePosition: [39.52766, -119.81353], targetPosition: [40.52766, -120.81353]}
-      ],
+      acknowledged: 0,
+      userLocation: 0
     };
   }
   
@@ -127,6 +114,8 @@ class Map extends Component {
   };
 
 //Toolbar for buttons 
+// When a new tool is selected, switchMode is changed to the appropriate case corresponding
+//to the draw tools
   _renderToolbar = () => {
     return (
       <div>
@@ -135,8 +124,9 @@ class Map extends Component {
       <Tooltip title = "Default Cursor" placement = "right">
         <Button
           style = {buttonStyle}
-          onClick={() => {this._switchMode(null);}}
+          onClick={() => {this._switchMode(null);}} //on click, call switchmode and change to null
           >
+            
             <div>
               <FaMousePointer/> 
             </div> 
@@ -145,7 +135,7 @@ class Map extends Component {
       <Tooltip title = "Draw Line" placement = "right">
         <Button
           style = {buttonStyle}
-          onClick={() => {this._switchMode('Polyline');}}
+          onClick={() => {this._switchMode('Polyline');}} //on click, call switchMode function and change to Polylin
           >
             <div>
               <FaRoute/> 
@@ -186,7 +176,9 @@ class Map extends Component {
       <Tooltip title = "Send Evacuation Instructions" placement = "right">
         <Button 
         style = {buttonStyle}
-        onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}>
+        //When Evacuation Instrcutions button is pressed, sets the modal state to true
+        //When set to true, it will open the report functionality
+        onClick={() => {this.setState({isModalOpen: !this.state.isModalOpen});}}> 
           <div>
             <FaArrowCircleRight/>
           </div>
@@ -196,6 +188,7 @@ class Map extends Component {
       <Tooltip title = "Get Safe Count" placement = "right">
         <Button 
         style = {buttonStyle}
+        //Runs getSafeCount with the state of safe
         onClick={() => {this._getSafeCount(this.state.safe)}}>
           <div>
             <FaUserFriends/>
@@ -206,7 +199,8 @@ class Map extends Component {
       <Tooltip title = "Get Acknowledged Count" placement = "right">
         <Button 
         style = {buttonStyle}
-        onClick={() => {this._getAckCount(this.state.safe)}}>
+        //Runs getSafeCount with the state of acknowledged
+        onClick={() => {this._getAckCount(this.state.acknowledged)}}>
           <div>
             <FaThumbsUp/>
           </div>
@@ -216,7 +210,8 @@ class Map extends Component {
       <Tooltip title = "Get Location" placement = "right">
         <Button 
         style = {buttonStyle}
-        onClick={() => {this._getLocation(this.state.location)}}>
+        //Runs getSafeCount with the state of userLocation
+        onClick={() => {this._getLocation(this.state.userLocation)}}>
           <div>
             <FaCompressArrowsAlt/>
           </div>
@@ -230,11 +225,13 @@ class Map extends Component {
 
   
 
+//When called, sends the completed drawing of the user to the database
+//sends in JSON format
   _sendRecentFeature = async (feature) => {
     console.log(feature);
 
     try {
-      const response = await API.post('/Input_Location', feature);
+      const response = await API.post('/Input_Location', feature); //URL
       console.log("Response from server: " , response);
     } catch (e) {
       console.log("Something went wrong, error : ", e);
@@ -242,11 +239,12 @@ class Map extends Component {
 
   };
 
+//Returns the safe count from the web server
   _getSafeCount = async (count) => {
     try {
-      const response = await API.get('/Return_Safe_Count', count);
+      const response = await API.get('/Return_Safe_Count', count); //URL
       console.log("Response from server: " , response);
-      var object = JSON.stringify(response.data);
+      var object = JSON.stringify(response.data); //stringify to use in alert
       alert(object);
       console.log(response);
       return response;
@@ -255,11 +253,12 @@ class Map extends Component {
     }
   }
 
+//Returns the users who have acknowledged the hazard
   _getAckCount = async (acknowledge) => {
     try {
-      const response = await API.get('/Return_Acknowledge_Count', acknowledge);
+      const response = await API.get('/Return_Acknowledge_Count', acknowledge); //URL
       console.log("Response from server: " , response);
-      var object = JSON.stringify(response.data);
+      var object = JSON.stringify(response.data); //stringify to use in alert
       alert(object);
       console.log(response);
       return response;
@@ -268,73 +267,23 @@ class Map extends Component {
     }
   }
 
+  //Returns the coordinates of the mobile users location
   _getLocation = async (location) => {
     try {
       const response = await API.get('/Get_User_Locations', location);
       console.log("Response from server: " , response);
       var object = JSON.stringify(response.data);
       var split = object.split('|');
-      // for(var i = 1; i < split.length - 1; i++)
-      // {
-      //  console.log(split[i]);
-       
-      //   // if(split[i].includes('n'))
-      //   //   var test = split[i].split('l');
-      //   //   console.log("hello "+ split[i]);
-      // }
-      //  var test = split[19].split(' ');
-      //  console.log(test[0]);
-      //  console.log(test[1]);
       console.log(object);
       alert(object);
-      
-      // this.state.newLat = test[0];
-      // this.state.newLong = test[1];
-
-      // console.log(this.state.newLat);
-
     } catch (e) {
       console.log("Something went wrong, error : ", e);
     }
   }
 
-  // _setUserLocation = () => {
-  //   navigator.geolocation.getCurrentPosition(position => {
-  //      let setUserLocation = {
-  //          lat: position.coords.latitude,
-  //          long: position.coords.longitude
-  //       };
-  //      let newViewport = {
-  //         height: "100vh",
-  //         width: "100vw",
-  //         latitude: position.coords.latitude,
-  //         longitude: position.coords.longitude,
-  //         zoom: 10
-  //       };
-  //       this.setState({
-  //         viewport: newViewport,
-  //         userLocation: setUserLocation
-  //      });
-  //   });
-  // };
-
-
-  _sendPopup = () => {
-      Prompt.Popup.plugins().prompt('', 'Type your name', function (value) {
-      Prompt.Popup.alert('You typed: ' + value);
-  });
-  }
-
-
   render() {
-    const {route} = this.props;
-    const layers = [
-      new LineLayer ({id: 'line-layer', data})
-    ]
     return(
         <div>
-        {/* <DeckGL layers={[layers]} initialViewState={{ ...this.state.viewport}} controller={true}></DeckGL> */}
-        
         <ReactMapGL {...this.state.viewport}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           //full list of styles here if you think one fits more
@@ -345,7 +294,9 @@ class Map extends Component {
           transitionInterpolator={new FlyToInterpolator()}
           doubleClickZoom={false}> 
 
-          <div style={{position: 'absolute', left: '1%', top: '1%'}}>
+          <div style={{position: 'absolute', left: '1%', top: '1%'}}
+          //renders the zoom control
+          >
             <NavigationControl
               style={{
                 color: "black"}}
@@ -353,70 +304,39 @@ class Map extends Component {
             />
           </div>
 
-          <div style={{position: 'absolute', left: '.94%', top: '15%'}}>
+              
+          <div style={{position: 'absolute', left: '.94%', top: '15%'}}
+          //Renders the toolbar 
+          >
             {this._renderToolbar()}
           </div>
 
-          <div>
+          <div
+          //Whenever the report functionality is open, the modal window wil render the survey component
+          >
             <Modal isOpen={this.state.isModalOpen} onClose={() => this.setState({isModalOpen: !this.state.isModalOpen})}>
               <SurveyComponent />
             </Modal>
-          </div>
-          <div>
-
-            
-          <Marker 
-          latitude={39.52766}
-          longitude={-119.81353}
-          offsetLeft={-20}
-          offsetTop={-10}>
-            
-          {/* <Markers
-            lat={39.52766}
-            lng={-119.81353}
-            name="My Marker"
-            color="blue"
-          /> */}
-          {/* <img class = "img" src = 'location.png' /> */}
-          </Marker> 
           </div>
 
           <Editor
             // to make the lines/vertices easier to interact with
             clickRadius={12}
-            mode={this.state.modeHandler}
+            mode={this.state.modeHandler} //modeHandler is changed depending on tool selected
             onSelect={(featureStyle) => {
             }}
-
+            //OnUpdate is a state of the drawing tools whenever a feature is drawnm
             onUpdate={(data) => {
-              this.setState({features: data});
+              this.setState({features: data}); //data drawn is written to the array features
               if(data.editType === "addFeature") {//only send data upon finishing a feature
                 this._sendRecentFeature(data.data[data.data.length - 1].geometry);//get most recent feature
-                //this.setState({isModalOpen: !this.state.isModalOpen});
                 this._switchMode('Editing');
               }
             }}
             
           />
-        {/* <Source id='polylineLayer' type='geojson' data={layerRoute}>
-        <Layer
-          id='lineLayer'
-          type='line'
-          source='layerRoute'
-          layout={{
-           'line-join': 'round',
-           'line-cap': 'round',
-          }}
-          paint={{
-           'line-color': 'rgba(3, 170, 238, 0.5)',
-            'line-width': 5,
-          }}
-        />
-      </Source> */}
 
         </ReactMapGL>
-        
-
         </div>
    );
   }

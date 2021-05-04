@@ -16,9 +16,11 @@ class App extends Component {
   
   render() {
     const { loading } = this.state;
-    if(loading) {
+    if(loading) { //Loading State
       return null;
     }
+
+    //renders loading state and Map from Map.js
     return (
       <div>
         <div id="app" class="loader"></div> 
